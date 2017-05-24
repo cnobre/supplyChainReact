@@ -4,6 +4,7 @@ var PropTypes = require('prop-types');
 
 import GoogleMapReact from 'google-map-react';
 
+
 const AnyReactComponent = ({ text }) => (
   <div style={{
     position: 'relative', color: 'white', background: 'red',
@@ -14,28 +15,11 @@ const AnyReactComponent = ({ text }) => (
 );
 
 class SimpleMap extends React.Component {
-
-  // static propTypes = {
-  //   center: PropTypes.array,
-  //   zoom: PropTypes.number,
-  //   greatPlaceCoords: PropTypes.any
-  // };
-
-  // static defaultProps = {
-  //   center: [59.938043, 30.337157],
-  //   zoom: 14,
-  //   greatPlaceCoords: {lat: 59.724465, lng: 30.080121}
-  // };
-
-
-  static defaultProps = {
-    center: {lat: 59.95, lng: 30.33},
-    zoom: 11
-  };
-
+  
   render() {
     return (
        <GoogleMapReact
+        bootstrapURLKeys={{key:'AIzaSyB42BSn5hxy34ZXrqno8lewYMAUoD2DBsE&'}} 
         defaultCenter={this.props.center}
         defaultZoom={this.props.zoom}
       >
@@ -48,6 +32,17 @@ class SimpleMap extends React.Component {
     );
   }
 }
+
+SimpleMap.propTypes = {
+  center: PropTypes.any,
+    zoom: PropTypes.number
+}
+
+SimpleMap.defaultProps = {
+  center: {lat: 59.95, lng: 30.33},
+    zoom: 11
+}
+
 
 export default SimpleMap
 
