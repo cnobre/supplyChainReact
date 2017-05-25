@@ -25,11 +25,6 @@ class SimpleMap extends React.Component {
         defaultCenter={this.props.center}
         defaultZoom={this.props.zoom}
       >
-        <AnyReactComponent 
-          lat={40.7608} 
-          lng={-111.89} 
-          text={''} 
-        />
       </GoogleMapReact>
     );
   }
