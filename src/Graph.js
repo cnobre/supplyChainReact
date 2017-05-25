@@ -1,121 +1,96 @@
 
-import React        from 'react';
-import {scaleOrdinal, schemeCategory20}           from 'd3-scale';
-import {forceSimulation,forceLink,forceManyBody,forceCenter} from 'd3-force';
+import React from 'react';
+import * as d3 from 'd3'
+
+var width = 500;
+var height = 400;
+
+var range = 20
+var data = {
+  nodes:d3.range(0, range).map(function(d){ return {size:5, key:'node'+d, label: "l"+d ,r:~~d3.randomUniform(8, 28)()}}),
+  links:d3.range(0, range).map(function(d){ return {size:3, key:'link'+d, source:~~d3.randomUniform(range)(), target:~~d3.randomUniform(range)()} })        
+}
+
+ var simulation = d3.forceSimulation()
+            .force("link", d3.forceLink().id(function(d) { return d.index }))
+            .force("collide",d3.forceCollide( function(d){return d.r + 8 }).iterations(16) )
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("y", d3.forceY(0))
+            .force("x", d3.forceX(0))
 
 
-// var color = scale.category20();
-var color = scaleOrdinal(schemeCategory20);
+class Graph extends React.Component {
 
-var Node = React.createClass({
-  render: function () {
-    return (
-        <circle
-          r={5}
-          cx={this.props.x}
-          cy={this.props.y}
-          style={{
-            "fill": color(this.props.group),
-            "stroke":"#fff",
-            "strokeWidth":"1.5px"
-          }}/>
-    )
+  componentWillMount() {
+    simulation.on('tick', () => {
+      // after force calculation starts, call
+      // forceUpdate on the React component on each tick
+      this.forceUpdate()
+    });
   }
-});
 
-var Link = React.createClass({
-  
-  render: function () {
+  componentWillReceiveProps(nextProps) {
+    // we should actually clone the nodes and links
+    // since we're not supposed to directly mutate
+    // props passed in from parent, and d3's force function
+    // mutates the nodes and links array directly
+    // we're bypassing that here for sake of brevity in example
+    simulation.nodes(nextProps.nodes)
+
+    simulation.force('link').links(nextProps.links);
+  }
+
+  render() {
+    // use React to draw all the nodes, d3 calculates the x and y
+    var nodes = this.props.nodes.map((node) => {
+      var transform = 'translate(' + node.x + ',' + node.y + ')';
+      return (
+        <g className='node' key={node.key} transform={transform}>
+          <circle r={node.r} />
+        </g>
+      );
+    });
+    var links = this.props.links.map((link) => {
+      return (
+        <line className='link' key={link.key} strokeWidth={link.size} stroke='black'
+          x1={link.source.x} x2={link.target.x} y1={link.source.y} y2={link.target.y} />
+      );
+    });
+
     return (
-      <line
-        x1={this.props.datum.source.x}
-        y1={this.props.datum.source.y}
-        x2={this.props.datum.target.x}
-        y2={this.props.datum.target.y}
-        style={{
-          "stroke":"#999", 
-          "strokeOpacity":".6",
-          "strokeWidth": Math.sqrt(this.props.datum.value)  
-        }}/>
+      <svg width={width} height={height} style={{display:'block', margin:'auto', 'background-color':'beige', opacity:'.2'}}>
+        <g>
+          {links}
+          {nodes}
+        </g>
+      </svg>
     );
   }
-})
+}
 
-var Graph = React.createClass({ 
-    // mixins: [Radium.StyleResolverMixin, Radium.BrowserStateMixin],
-    getInitialState: function() {
-      
-    var svgWidth = 900;
-    var svgHeight = 900; 
-    // var force = d3.forceSimulation()
-    //   .charge(-120)
-    //   .linkDistance(30)
-    //   .size([svgWidth, svgHeight]);
+class GraphApp extends React.Component {
 
-      var force = forceSimulation()
-      .force('link', forceLink().distance(100))
-      .force('charge', forceManyBody().strength(-100))
-      .force('center', forceCenter(svgWidth / 2, svgHeight / 2));
-      
-      return {
-        svgWidth: svgWidth,
-        svgHeight: svgHeight,
-        force: force,
-        nodes: null,
-        links: null
-      }
-    },
-
-    componentDidMount: function () {
-      var self = this;
-      // refactor entire graph into sub component - force layout shouldn't be
-      // manipulating props, though this works
-      this.state.force
-                .nodes(this.props.lesmis.nodes)
-                .links(this.props.lesmis.links)
-                .start()
-      this.state.force.on("tick", function (tick, b, c) {
-        self.forceUpdate()
-      }) 
-    },
-    drawLinks: function () {
-      var links = this.props.data.links.map(function (link, index) {
-        return (<Link datum={link} key={index} />)
-      })
-      return (<g> 
-        {links}
-      </g>)
-    },
-    drawNodes: function () {
-      var nodes = this.props.lesmis.nodes.map(function (node, index) {
-        return (<Node 
-          key={index}
-          x={node.x}
-          y={node.y}
-          group={node.group}/>
-        ) })
-      return nodes;
-    },
-    render: function() {
-        return (
-          <div>
-            <div style={{"marginLeft": "20px", "fontFamily": "Helvetica"}}>
-
-            </div>
-            <svg
-              style={{"border": "2px solid black", "margin": "20px"}}
-              width={this.state.svgWidth}
-              height={this.state.svgHeight}>
-              {this.drawLinks()}
-              {this.drawNodes()}
-            </svg>
-          </div>
-        )
+  constructor(props) {
+    super(props);
+    this.state = {
+      nodes: [],
+      links: [],
     }
-});
+  }
 
-export default Graph;
+  componentDidMount() {
+    this.setState(data);
+  }
 
-// d3.json("https://gist.githubusercontent.com/fredbenenson/4212290/raw/40be75727ab60227a2b41abe5a509d30de831ffd/miserables.json", function(error, lesmis) {
-//   React.render(<Graph lesmis={lesmis}/>, document.getElementById("mount-point"));   
-// });
+
+  render() {
+    return (
+      <div>
+        <Graph nodes={this.state.nodes} links={this.state.links} />
+      </div>
+    );
+  }
+}
+
+export default GraphApp
