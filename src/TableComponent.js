@@ -1,5 +1,5 @@
 import React from 'react';
-import tableData from './companyInfo.json';
+
 
 import {
   Table,
@@ -29,14 +29,16 @@ export default class TableComponent extends React.Component {
       deselectOnClickaway: true,
       showCheckboxes: false,
       showTooltip:true,
-      height: '200px'};
+      height: '300px'};
   }
 
 
   render() {
 
+    let tableData = this.props.data;
+
     return (
-      <div style={{width: '100%', maxWidth: 1000, margin: 'auto'}}>
+      <div style={{width: '80%', maxWidth: 1000, margin: 'auto'}}>
 
             <Table
           height={this.state.height}
@@ -60,7 +62,7 @@ export default class TableComponent extends React.Component {
             {Object.keys(tableData[0]).map((key)=> { 
                 return (
               <TableHeaderColumn tooltip={key} key={key} style={{width:'50px', paddingLeft:'10px'}}>
-              {key}</TableHeaderColumn>
+              {key.slice(0,6)}</TableHeaderColumn>
           )
       })}
               
