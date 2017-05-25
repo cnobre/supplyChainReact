@@ -1,6 +1,7 @@
 
 import React from 'react';
 import * as d3 from 'd3'
+import ReactTooltip from 'react-tooltip'
 
 var width = 500;
 var height = 400;
@@ -47,19 +48,20 @@ class Graph extends React.Component {
       var transform = 'translate(' + node.x + ',' + node.y + ')';
       return (
         <g className='node' key={node.key} transform={transform}>
-          <circle r={node.r} />
+          <circle r={node.r} data-tip="hello world" style={{fill: '#888888', stroke:'#fff', 'stroke-width':'2px'}} />
         </g>
       );
     });
     var links = this.props.links.map((link) => {
       return (
-        <line className='link' key={link.key} strokeWidth={link.size} stroke='black'
+        <line className='link' key={link.key} strokeWidth={link.size} style={{stroke:'#cccccc', opacity:'1'}}
           x1={link.source.x} x2={link.target.x} y1={link.source.y} y2={link.target.y} />
       );
     });
 
     return (
-      <svg width={width} height={height} style={{display:'block', margin:'auto', 'background-color':'beige', opacity:'.2'}}>
+      <svg width={width} height={height} style={{display:'block', margin:'auto', 'background-color':'none', opacity:'.9'}}>
+      <rect width={width*0.85} height={height} style={{'fill':'white', opacity:'.6'}}/>
         <g>
           {links}
           {nodes}
