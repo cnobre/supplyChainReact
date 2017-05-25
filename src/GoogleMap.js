@@ -1,22 +1,24 @@
 
 import React from 'react';
+import GraphApp from './Graph'
 var PropTypes = require('prop-types');
 
 import GoogleMapReact from 'google-map-react';
 
-
 const AnyReactComponent = ({ text }) => (
   <div style={{
     position: 'relative', color: 'white', background: 'red',
-    height: 40, width: 60, top: -20, left: -30,    
+    height: 20, width: 60, top: -20, left: -30,    
   }}>
     {text}
   </div>
 );
 
 class SimpleMap extends React.Component {
+
   
   render() {
+
     return (
        <GoogleMapReact
         bootstrapURLKeys={{key:'AIzaSyB42BSn5hxy34ZXrqno8lewYMAUoD2DBsE&'}} 
@@ -24,9 +26,9 @@ class SimpleMap extends React.Component {
         defaultZoom={this.props.zoom}
       >
         <AnyReactComponent 
-          lat={59.955413} 
-          lng={30.337844} 
-          text={'Kreyser Avrora'} 
+          lat={40.7608} 
+          lng={-111.89} 
+          text={''} 
         />
       </GoogleMapReact>
     );
@@ -39,7 +41,7 @@ SimpleMap.propTypes = {
 }
 
 SimpleMap.defaultProps = {
-  center: {lat: 59.95, lng: 30.33},
+  center: {lat: 40.76, lng: -111.89},
     zoom: 11
 }
 
