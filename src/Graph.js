@@ -1,7 +1,8 @@
 
 import React from 'react';
 import * as d3 from 'd3'
-import ReactTooltip from 'react-tooltip'
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 
 var width = 500;
 var height = 400;
@@ -22,6 +23,13 @@ var data = {
 
 
 class Graph extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {value: 1};
+  }
+
+  handleChange = (event, index, value) => this.setState({value});
 
   componentWillMount() {
     simulation.on('tick', () => {
@@ -47,8 +55,10 @@ class Graph extends React.Component {
     var nodes = this.props.nodes.map((node) => {
       var transform = 'translate(' + node.x + ',' + node.y + ')';
       return (
+
         <g className='node' key={node.key} transform={transform}>
-          <circle r={node.r} data-tip="hello world" style={{fill: '#888888', stroke:'#fff', 'stroke-width':'2px'}} />
+          <circle r={node.r} style={{fill: '#888888', stroke:'#fff', 'strokeWidth':'2px'}} />
+          
         </g>
       );
     });
@@ -60,13 +70,14 @@ class Graph extends React.Component {
     });
 
     return (
-      <svg width={width} height={height} style={{display:'block', margin:'auto', 'background-color':'none', opacity:'.9'}}>
-      <rect width={width*0.85} height={height} style={{'fill':'white', opacity:'.6'}}/>
+      <svg width={width} height={height} style={{display:'block', margin:'auto', 'backgroundColor':'none', opacity:'.9'}}>
+      <rect width={width} height={height} style={{'fill':'white', opacity:'.6' , 'pointerEvents':'none'}}/>
         <g>
           {links}
           {nodes}
         </g>
       </svg>
+
     );
   }
 }
@@ -89,7 +100,9 @@ class GraphApp extends React.Component {
   render() {
     return (
       <div>
+      
         <Graph nodes={this.state.nodes} links={this.state.links} />
+
       </div>
     );
   }

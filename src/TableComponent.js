@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import {
   Table,
   TableBody,
@@ -80,12 +79,9 @@ export default class TableComponent extends React.Component {
 
               {Object.keys(row).map((key)=> { 
                 return (
-
-                <TableRowColumn key={key} style={{paddingRight:'10px', paddingLeft:'10px'}} >
-    
-                {row[key]}</TableRowColumn>
-
-          )
+                 
+                <TableRowColumn  key={key} style={{paddingRight:'10px', paddingLeft:'10px'}} > {row[key]}</TableRowColumn>
+                        )
       })}
               
               </TableRow>

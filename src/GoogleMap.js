@@ -1,6 +1,5 @@
 
 import React from 'react';
-import GraphApp from './Graph'
 var PropTypes = require('prop-types');
 
 import GoogleMapReact from 'google-map-react';
@@ -24,6 +23,8 @@ class SimpleMap extends React.Component {
         bootstrapURLKeys={{key:'AIzaSyB42BSn5hxy34ZXrqno8lewYMAUoD2DBsE&'}} 
         defaultCenter={this.props.center}
         defaultZoom={this.props.zoom}
+        onGoogleApiLoaded={({map, maps}) => console.log(map, maps)}
+                       yesIWantToUseGoogleMapApiInternals
       >
       </GoogleMapReact>
     );
