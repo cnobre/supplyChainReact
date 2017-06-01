@@ -1,17 +1,10 @@
 
 import React from 'react';
 import * as d3 from 'd3'
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
 
-var width = 500;
+var width = 360;
 var height = 400;
 
-var range = 20
-var data = {
-  nodes:d3.range(0, range).map(function(d){ return {size:5, key:'node'+d, label: "l"+d ,r:~~d3.randomUniform(8, 28)()}}),
-  links:d3.range(0, range).map(function(d){ return {size:3, key:'link'+d, source:~~d3.randomUniform(range)(), target:~~d3.randomUniform(range)()} })        
-}
 
  var simulation = d3.forceSimulation()
             .force("link", d3.forceLink().id(function(d) { return d.index }))
@@ -57,7 +50,7 @@ class Graph extends React.Component {
       return (
 
         <g className='node' key={node.key} transform={transform}>
-          <circle r={node.r} style={{fill: '#888888', stroke:'#fff', 'strokeWidth':'2px'}} />
+          <circle r={node.r} onMouseOver={(n) => console.log(node)} style={{fill: node.selected ? '#ad0d1b' : '#888888', stroke:'#fff', 'strokeWidth':'2px'}} />
           
         </g>
       );
@@ -68,6 +61,7 @@ class Graph extends React.Component {
           x1={link.source.x} x2={link.target.x} y1={link.source.y} y2={link.target.y} />
       );
     });
+
 
     return (
       <svg width={width} height={height} style={{display:'block', margin:'auto', 'backgroundColor':'none', opacity:'.9'}}>
@@ -93,14 +87,25 @@ class GraphApp extends React.Component {
   }
 
   componentDidMount() {
+
+    var maxSize = d3.max(this.props.data,(d)=>{return d[this.props.nodeSizeField]}); 
+    var sizeScale = d3.scalePow().exponent(1).range([10 , 30]).domain([0,maxSize]);
+
+    var data = {
+  nodes:this.props.data.map((d,i)=>{ return {selected:d.selected, key:'node'+i, label: "l"+i ,r:sizeScale(d[this.props.nodeSizeField])}}),
+  links:[]
+}; 
+
     this.setState(data);
   }
 
 
   render() {
+
+
+
     return (
       <div>
-      
         <Graph nodes={this.state.nodes} links={this.state.links} />
 
       </div>
