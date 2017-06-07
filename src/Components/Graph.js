@@ -92,7 +92,7 @@ class GraphApp extends React.Component {
     var sizeScale = d3.scalePow().exponent(1).range([10 , 30]).domain([0,maxSize]);
 
     var data = {
-  nodes:this.props.data.map((d,i)=>{ return {selected:d.selected, key:'node'+i, label: "l"+i ,r:sizeScale(d[this.props.nodeSizeField])}}),
+  nodes:this.props.data.map((d,i)=>{ return {selected:d.selected, key:'node'+i, label: "l"+i ,r:5}}),
   links:[]
 }; 
 
